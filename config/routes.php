@@ -40,10 +40,13 @@ use Cake\Routing\Router;
  *
  */
 Router::defaultRouteClass('DashedRoute');
-Router::extensions(['json', 'xml']);
-Router::scope('/', function ($routes) {
-    
+
+Router::prefix('api', function ($routes) {
+    $routes->extensions(['json', 'xml']);
     $routes->resources('Cocktails');
+});
+
+Router::scope('/', function ($routes) {
     /**
      * Here, we are connecting '/' (base path) to a controller called 'Pages',
      * its action called 'display', and we pass a param to select the view file
