@@ -203,3 +203,5 @@ Type::build('date')->useLocaleParser();
 Type::build('datetime')->useLocaleParser();
 
 Plugin::load('Crud');
+
+Plugin::load('ADmad/JwtAuth');
