@@ -1,17 +1,20 @@
 <?php
+
+namespace App\Controller;
+
 namespace App\Controller\Api;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
 
-class AppController extends Controller
-{
+class AppController extends Controller {
 
     use \Crud\Controller\ControllerTrait;
 
-    public function initialize()
-    {
-        parent::initialize();
+    public function initialize() {
+        if ($this->request->is('options')) {
+            die('ss');
+        }
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Crud.Crud', [
@@ -28,6 +31,7 @@ class AppController extends Controller
                 'Crud.ApiQueryLog'
             ]
         ]);
+
         $this->loadComponent('Auth', [
             'storage' => 'Memory',
             'authenticate' => [
@@ -48,4 +52,5 @@ class AppController extends Controller
             'checkAuthIn' => 'Controller.initialize'
         ]);
     }
+
 }
