@@ -11,7 +11,7 @@ class UsersController extends AppController {
 
     public function initialize() {
         parent::initialize();
-        $this->Auth->allow(['add', 'token']);
+        $this->Auth->allow(['add', 'token', 'facebook', 'google']);
     }
 
     public function add() {
@@ -30,7 +30,7 @@ class UsersController extends AppController {
         });
         return $this->Crud->execute();
     }
-    
+
     public function token() {
         $user = $this->Auth->identify();
         if (!$user) {
@@ -48,4 +48,45 @@ class UsersController extends AppController {
             '_serialize' => ['success', 'data']
         ]);
     }
+
+    public function facebook() {
+        $data = $this->request->input('json_decode');
+        $user = $this->Users->find('all')->where(['Users.provider' => 'facebook', 'Users.provider_uid' => $data->clientId])->first();
+
+        if (!$user) {
+            throw new UnauthorizedException('Invalid username or password');
+        }
+
+        $this->set([
+            'success' => true,
+            'data' => [
+                'token' => JWT::encode([
+                    'sub' => $user['id'],
+                    'exp' => time() + 1800
+                        ], Security::salt())
+            ],
+            '_serialize' => ['success', 'data']
+        ]);
+    }
+
+    public function google() {
+        $data = $this->request->input('json_decode');
+        $user = $this->Users->find('all')->where(['Users.provider' => 'facebook', 'Users.provider_uid' => $data->clientId])->first();
+
+        if (!$user) {
+            throw new UnauthorizedException('Invalid username or password');
+        }
+
+        $this->set([
+            'success' => true,
+            'data' => [
+                'token' => JWT::encode([
+                    'sub' => $user['id'],
+                    'exp' => time() + 1800
+                        ], Security::salt())
+            ],
+            '_serialize' => ['success', 'data']
+        ]);
+    }
+
 }
