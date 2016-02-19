@@ -11,7 +11,7 @@ class UsersController extends AppController {
 
     public function initialize() {
         parent::initialize();
-        $this->Auth->allow(['add', 'token', 'facebook', 'google', 'upload']);
+        $this->Auth->allow(['add', 'token', 'facebook', 'google']);
     }
 
     public function add() {
@@ -30,7 +30,7 @@ class UsersController extends AppController {
         });
         return $this->Crud->execute();
     }
-    
+
     public function token() {
         $user = $this->Auth->identify();
         if (!$user) {
@@ -56,8 +56,7 @@ class UsersController extends AppController {
         if (!$user) {
             throw new UnauthorizedException('Invalid username or password');
         }
-        $user =  $user->toArray();
-        $this->Auth->setUser($user);
+
         $this->set([
             'success' => true,
             'data' => [
@@ -77,7 +76,7 @@ class UsersController extends AppController {
         if (!$user) {
             throw new UnauthorizedException('Invalid username or password');
         }
-        $this->Auth->setUser($user);
+
         $this->set([
             'success' => true,
             'data' => [
@@ -88,12 +87,6 @@ class UsersController extends AppController {
             ],
             '_serialize' => ['success', 'data']
         ]);
-    }
-    public function upload() {
-        echo "<pre>";
-        print_r($_FILES);
-        echo "</pre>";
-        die('Here');
     }
 
 }
