@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Controller\Api\AppController;
 use Cake\Event\Event;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\Utility\Security;
@@ -9,9 +10,31 @@ use Firebase\JWT\JWT;
 
 class UsersController extends AppController {
 
+    public $paginate = [
+        'page' => 1,
+        'limit' => 10,
+        'maxLimit' => 100,
+        'fields' => [
+            'id', 'name', 'description'
+        ],
+        'sortWhitelist' => [
+            'id', 'name', 'description'
+        ]
+    ];
+
     public function initialize() {
         parent::initialize();
         $this->Auth->allow(['add', 'token', 'facebook', 'google', 'upload']);
+        //$this->requestData = $this->request->input('json_decode');
+        //$this->Auth->allow();
+    }
+
+    public function view($id = null) {
+        $user = $this->Users->get($id, [
+            'contain' => []
+        ]);
+        $this->set('user', $user);
+        $this->set('_serialize', ['user']);
     }
 
     public function add() {
@@ -30,7 +53,7 @@ class UsersController extends AppController {
         });
         return $this->Crud->execute();
     }
-    
+
     public function token() {
         $user = $this->Auth->identify();
         if (!$user) {
@@ -43,7 +66,8 @@ class UsersController extends AppController {
                 'token' => JWT::encode([
                     'sub' => $user['id'],
                     'exp' => time() + 1800
-                        ], Security::salt())
+                        ], Security::salt()),
+                'user_id' => $user['id']
             ],
             '_serialize' => ['success', 'data']
         ]);
@@ -56,7 +80,7 @@ class UsersController extends AppController {
         if (!$user) {
             throw new UnauthorizedException('Invalid username or password');
         }
-        $user =  $user->toArray();
+        $user = $user->toArray();
         $this->Auth->setUser($user);
         $this->set([
             'success' => true,
@@ -64,7 +88,8 @@ class UsersController extends AppController {
                 'token' => JWT::encode([
                     'sub' => $user['id'],
                     'exp' => time() + 1800
-                        ], Security::salt())
+                        ], Security::salt()),
+                'user_id' => $user['id']
             ],
             '_serialize' => ['success', 'data']
         ]);
@@ -84,11 +109,13 @@ class UsersController extends AppController {
                 'token' => JWT::encode([
                     'sub' => $user['id'],
                     'exp' => time() + 1800
-                        ], Security::salt())
+                        ], Security::salt()),
+                'user_id' => $user['id']
             ],
             '_serialize' => ['success', 'data']
         ]);
     }
+
     public function upload() {
         echo "<pre>";
         print_r($_FILES);

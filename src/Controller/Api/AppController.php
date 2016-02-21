@@ -17,6 +17,9 @@ class AppController extends Controller {
         }
 
         $this->loadComponent('RequestHandler');
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->response->type('application/json');
+
         $this->loadComponent('Crud.Crud', [
             'actions' => [
                 'Crud.Index',
@@ -36,6 +39,7 @@ class AppController extends Controller {
             'storage' => 'Memory',
             'authenticate' => [
                 'Form' => [
+                    'fields' => ['username' => 'email', 'password' => 'password'],
                     'scope' => ['Users.active' => 1]
                 ],
                 'ADmad/JwtAuth.Jwt' => [
