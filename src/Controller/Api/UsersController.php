@@ -115,12 +115,4 @@ class UsersController extends AppController {
             '_serialize' => ['success', 'data']
         ]);
     }
-
-    public function upload() {
-        echo "<pre>";
-        print_r($_FILES);
-        echo "</pre>";
-        die('Here');
-    }
-
 }
