@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller\Api;
 
 use App\Controller\Api\AppController;
@@ -8,9 +9,8 @@ use App\Controller\Api\AppController;
  *
  * @property \App\Model\Table\GroomsMensTable $GroomsMens
  */
-class GroomsMensController extends AppController
-{
-    
+class GroomsMensController extends AppController {
+
     public function initialize() {
         parent::initialize();
         $this->Auth->allow();
@@ -21,8 +21,7 @@ class GroomsMensController extends AppController
      *
      * @return void
      */
-    public function index()
-    {
+    public function index() {
         $this->set('groomsMens', $this->paginate($this->GroomsMens));
         $this->set('_serialize', ['groomsMens']);
     }
@@ -34,8 +33,7 @@ class GroomsMensController extends AppController
      * @return void
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function view($id = null)
-    {
+    public function view($id = null) {
         $groomsMen = $this->GroomsMens->get($id, [
             'contain' => []
         ]);
@@ -48,8 +46,7 @@ class GroomsMensController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function add()
-    {
+    public function add() {
         $groomsMen = $this->GroomsMens->newEntity();
         if ($this->request->is('post')) {
             $groomsMen = $this->GroomsMens->patchEntity($groomsMen, $this->request->data);
@@ -71,8 +68,7 @@ class GroomsMensController extends AppController
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
-    {
+    public function edit($id = null) {
         $groomsMen = $this->GroomsMens->get($id, [
             'contain' => []
         ]);
@@ -96,15 +92,27 @@ class GroomsMensController extends AppController
      * @return \Cake\Network\Response|null Redirects to index.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function delete($id = null)
-    {
+    public function delete($id = null) {
         $this->request->allowMethod(['post', 'delete']);
         $groomsMen = $this->GroomsMens->get($id);
         if ($this->GroomsMens->delete($groomsMen)) {
-            $this->Flash->success(__('The grooms men has been deleted.'));
+
+            $this->set([
+                'success' => true,
+                'data' => [
+                    'message' => 'The grooms men has been deleted.'
+                ],
+                '_serialize' => ['success', 'data']
+            ]);
         } else {
-            $this->Flash->error(__('The grooms men could not be deleted. Please, try again.'));
+            $this->set([
+                'success' => false,
+                'data' => [
+                    'message' => 'The grooms men could not be deleted. Please, try again.'
+                ],
+                '_serialize' => ['success', 'data']
+            ]);
         }
-        return $this->redirect(['action' => 'index']);
     }
+
 }

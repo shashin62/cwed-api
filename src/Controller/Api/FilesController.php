@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Controller\Api\AppController;
+use Cake\ORM\TableRegistry;
 
 class FilesController extends AppController {
 
@@ -42,27 +43,43 @@ class FilesController extends AppController {
                     //prepare the filename for database entry 
                     $imageFileName = $setNewFileName . '.' . $ext;
                 }
-            }
-            echo "<pre>";
-            print_r($imageFileName);
-            echo "</pre>";
-            die('Here');
 
-//            $getFormvalue = $this->Users->patchEntity($particularRecord, $this->request->data);
-//
-//            if (!empty($this->request->data['upload']['name'])) {
-//                $getFormvalue->avatar = $imageFileName;
-//            }
-//
-//
-//            if ($this->Users->save($getFormvalue)) {
-//                $this->Flash->success('Your profile has been sucessfully updated.');
-//                return $this->redirect(['controller' => 'Users', 'action' => 'dashboard']);
-//            } else {
-//                $this->Flash->error('Records not be saved. Please, try again.');
-//            }
+                $groomsMensTable = TableRegistry::get('GroomsMens');
+
+                if (!empty($this->request->data['params']['id'])) {
+                    $groomsMen = $groomsMensTable->get($this->request->data['params']['id']); // Return article with id 12
+                } else {
+                    $groomsMen = $groomsMensTable->newEntity();
+                }
+
+                $groomsMen->name = $this->request->data['params']['name'];
+                $groomsMen->position = $this->request->data['params']['position'];
+                $groomsMen->date = $this->request->data['params']['date'];
+                $groomsMen->description = $this->request->data['params']['description'];
+                $groomsMen->photo_url = $imageFileName;
+
+                if ($groomsMensTable->save($groomsMen)) {
+                    // The $article entity contains the id now
+                    $id = $groomsMen->id;
+                } else {
+                    $id = $groomsMen->id;
+                }
+            }
         }
-        die('Here');
+
+        $groomsMan = $groomsMensTable->get($id, [
+                    'contain' => []
+                ])->toArray();
+
+        // $groomsMan = $groomsMan->toArray();
+        //$groomsMan['date'] = $groomsMan['date']->date;
+
+        $this->set([
+            'success' => true,
+            'groomsMen' => $groomsMan,
+            '_serialize' => ['success', 'groomsMen']
+        ]);
+        //exit;
     }
 
 }
