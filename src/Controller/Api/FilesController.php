@@ -13,24 +13,10 @@ class FilesController extends AppController {
 
     public function upload() {
         if (!empty($this->request->data)) {
-            if ($this->request->data['file']['error'] === 0) {
+            $imageFileName = '';
+            if (!empty($this->request->data['file']) && isset($this->request->data['file']['error']) && $this->request->data['file']['error'] === 0) {
                 $file = $this->request->data['file']; //put the data into a var for easy use
-                //$ext = substr(strtolower(strrchr($file['name'], '.')), 1); //get the extension
-                switch ($file['type']) {
-                    case 'image/gif' : $ext = 'gif';
-                        break;
-                    case 'image/png' : $ext = 'png';
-                        break;
-                    case 'image/jpeg' : $ext = 'jpg';
-                        break;
-                    case 'application/pdf' : $ext = 'pdf';
-                        break;
-
-                    default :
-                        //throw new ApplicationException('The file uploaded was not a valid image file.');
-                        break;
-                }
-
+                $ext = $this->__getFileExtn($file['type']);
                 $arr_ext = array('png', 'jpg', 'jpeg', 'gif', 'pdf'); //set allowed extensions
                 $setNewFileName = time() . "_" . rand(000000, 999999);
 
@@ -43,27 +29,30 @@ class FilesController extends AppController {
                     //prepare the filename for database entry 
                     $imageFileName = $setNewFileName . '.' . $ext;
                 }
+            }
 
-                $groomsMensTable = TableRegistry::get('GroomsMens');
+            $groomsMensTable = TableRegistry::get('GroomsMens');
 
-                if (!empty($this->request->data['params']['id'])) {
-                    $groomsMen = $groomsMensTable->get($this->request->data['params']['id']); // Return article with id 12
-                } else {
-                    $groomsMen = $groomsMensTable->newEntity();
-                }
+            if (!empty($this->request->data['params']['id'])) {
+                $groomsMen = $groomsMensTable->get($this->request->data['params']['id']); // Return article with id 12
+            } else {
+                $groomsMen = $groomsMensTable->newEntity();
+            }
 
-                $groomsMen->name = $this->request->data['params']['name'];
-                $groomsMen->position = $this->request->data['params']['position'];
-                $groomsMen->date = $this->request->data['params']['date'];
-                $groomsMen->description = $this->request->data['params']['description'];
+            $groomsMen->name = $this->request->data['params']['name'];
+            $groomsMen->position = $this->request->data['params']['position'];
+            $groomsMen->date = $this->request->data['params']['date'];
+            $groomsMen->description = $this->request->data['params']['description'];
+
+            if (!empty($imageFileName)) {
                 $groomsMen->photo_url = $imageFileName;
+            }
 
-                if ($groomsMensTable->save($groomsMen)) {
-                    // The $article entity contains the id now
-                    $id = $groomsMen->id;
-                } else {
-                    $id = $groomsMen->id;
-                }
+            if ($groomsMensTable->save($groomsMen)) {
+                // The $article entity contains the id now
+                $id = $groomsMen->id;
+            } else {
+                $id = $groomsMen->id;
             }
         }
 
@@ -80,6 +69,25 @@ class FilesController extends AppController {
             '_serialize' => ['success', 'groomsMen']
         ]);
         //exit;
+    }
+
+    private function __getFileExtn($fileType) {
+        switch ($fileType) {
+            case 'image/gif' : $ext = 'gif';
+                break;
+            case 'image/png' : $ext = 'png';
+                break;
+            case 'image/jpeg' : $ext = 'jpg';
+                break;
+            case 'application/pdf' : $ext = 'pdf';
+                break;
+
+            default :
+                //throw new ApplicationException('The file uploaded was not a valid image file.');
+                break;
+        }
+
+        return $ext;
     }
 
 }

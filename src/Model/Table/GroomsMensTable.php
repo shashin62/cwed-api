@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use App\Model\Entity\GroomsMen;
@@ -11,8 +12,7 @@ use Cake\Validation\Validator;
  * GroomsMens Model
  *
  */
-class GroomsMensTable extends Table
-{
+class GroomsMensTable extends Table {
 
     /**
      * Initialize method
@@ -20,8 +20,7 @@ class GroomsMensTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
-    {
+    public function initialize(array $config) {
         parent::initialize($config);
 
         $this->table('grooms_mens');
@@ -29,7 +28,6 @@ class GroomsMensTable extends Table
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
-
     }
 
     /**
@@ -38,36 +36,36 @@ class GroomsMensTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
-    {
+    public function validationDefault(Validator $validator) {
         $validator
-            ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+                ->add('id', 'valid', ['rule' => 'numeric'])
+                ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('name', 'create')
-            ->notEmpty('name');
+                ->requirePresence('name', 'create')
+                ->notEmpty('name');
 
         $validator
-            ->requirePresence('position', 'create')
-            ->notEmpty('position');
+                ->requirePresence('position', 'create')
+                ->notEmpty('position');
 
         $validator
-            ->requirePresence('date', 'create')
-            ->notEmpty('date');
+                ->requirePresence('date', 'create')
+                ->notEmpty('date');
+
+//        $validator
+//            ->requirePresence('photo_url', 'create')
+//            ->notEmpty('photo_url');
 
         $validator
-            ->requirePresence('photo_url', 'create')
-            ->notEmpty('photo_url');
+                ->requirePresence('description', 'create')
+                ->notEmpty('description');
 
         $validator
-            ->requirePresence('description', 'create')
-            ->notEmpty('description');
-
-        $validator
-            ->add('active', 'valid', ['rule' => 'boolean'])
-            ->allowEmpty('active');
+                ->add('active', 'valid', ['rule' => 'boolean'])
+                ->allowEmpty('active');
 
         return $validator;
     }
+
 }

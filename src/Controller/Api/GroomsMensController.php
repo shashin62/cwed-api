@@ -72,17 +72,29 @@ class GroomsMensController extends AppController {
         $groomsMen = $this->GroomsMens->get($id, [
             'contain' => []
         ]);
+
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $groomsMen = $this->GroomsMens->patchEntity($groomsMen, $this->request->data);
             if ($this->GroomsMens->save($groomsMen)) {
-                $this->Flash->success(__('The grooms men has been saved.'));
-                return $this->redirect(['action' => 'index']);
+
+                $this->set([
+                    'success' => true,
+                    'data' => compact('groomsMen'),
+                    '_serialize' => ['success', 'data']
+                ]);
+//                $this->set(compact('groomsMen'));
+//                $this->set('_serialize', ['groomsMen']);
             } else {
-                $this->Flash->error(__('The grooms men could not be saved. Please, try again.'));
+                $this->set([
+                    'success' => false,
+                    'message' => 'The grooms men could not be saved. Please, try again.',
+                    '_serialize' => ['success', 'message']
+                ]);
             }
         }
-        $this->set(compact('groomsMen'));
-        $this->set('_serialize', ['groomsMen']);
+//        $this->set(compact('groomsMen'));
+//        $this->set('_serialize', ['groomsMen']);
     }
 
     /**
@@ -99,18 +111,14 @@ class GroomsMensController extends AppController {
 
             $this->set([
                 'success' => true,
-                'data' => [
-                    'message' => 'The grooms men has been deleted.'
-                ],
-                '_serialize' => ['success', 'data']
+                'message' => 'The grooms men has been deleted.',
+                '_serialize' => ['success', 'message']
             ]);
         } else {
             $this->set([
                 'success' => false,
-                'data' => [
-                    'message' => 'The grooms men could not be deleted. Please, try again.'
-                ],
-                '_serialize' => ['success', 'data']
+                'message' => 'The grooms men could not be deleted. Please, try again.',
+                '_serialize' => ['success', 'message']
             ]);
         }
     }
