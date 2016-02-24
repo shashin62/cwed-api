@@ -41,7 +41,7 @@ class FilesController extends AppController {
 
             $groomsMen->name = $this->request->data['params']['name'];
             $groomsMen->position = $this->request->data['params']['position'];
-            $groomsMen->date = $this->request->data['params']['date'];
+            //$groomsMen->date = $this->request->data['params']['date'];
             $groomsMen->description = $this->request->data['params']['description'];
 
             if (!empty($imageFileName)) {
